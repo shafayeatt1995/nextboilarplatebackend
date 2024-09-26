@@ -20,8 +20,9 @@ const controller = {
 
   async login(req, res) {
     try {
-      const { _id, name, email, power, type } = req.user;
-      const payload = { _id, name, email, type };
+      const { _id, name, email, power, type, socialAccount, provider } =
+        req.user;
+      const payload = { _id, name, email, type, socialAccount, provider };
 
       if (power === 420 && type === "admin") {
         payload.isAdmin = true;
