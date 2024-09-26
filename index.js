@@ -6,7 +6,7 @@ const compression = require("compression");
 const cors = require("cors");
 const session = require("express-session");
 const port = process.env.PORT || 8000;
-require("./config/database");
+const { mongoConnect, mongoMiddleware } = require("./config/database");
 
 app.use(cors({ origin: process.env.BASE_URL, credentials: true }));
 function verifyRequest(req, res, buf, encoding) {
@@ -29,13 +29,14 @@ app.use(
   })
 );
 
-app.use("/", require("./routes"));
+app.use("/", mongoMiddleware, require("./routes"));
 
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).json({ error: err.message || "Something went wrong!" });
 });
 
-app.listen(port, () => {
+app.listen(port, async () => {
   console.log(`Server running on port ${port}`);
+  await mongoConnect();
 });
